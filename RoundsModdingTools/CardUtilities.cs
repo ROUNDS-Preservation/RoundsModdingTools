@@ -11,6 +11,11 @@ using UnboundLib.Networking;
 namespace ModdingTools {
     public static class CardUtilities {
         internal static List<Func<string,CardInfo>> lookupFunctions = new List<Func<string,CardInfo>>();
+        internal static Dictionary<CardInfo,bool> Reasonabilities = new Dictionary<CardInfo,bool>();
+
+        public static void SetReasonability(CardInfo card, bool Reasonability = false) {
+            Reasonabilities[card] = Reasonability;
+        }
 
         public static bool AddLookupFunc(Func<string, CardInfo> function) {
             if (lookupFunctions.Contains(function)) return false;
@@ -60,21 +65,19 @@ namespace ModdingTools {
         }
 
         internal static void ApplyCard(Player player, CardInfo card, bool reasign) {
+            bool doAsign = !reasign || !Reasonabilities.ContainsKey(card) || Reasonabilities[card];
             CardBarHandler.instance.AddCard(player.playerID, card);
             card.gameObject.GetComponent<CardInfo>().sourceCard = card;
-            if(!reasign|| "card" == "Can be reasigned")card.GetComponent<ApplyCardStats>().InvokeMethod("ApplyStats");
+            if(doAsign) card.GetComponent<ApplyCardStats>().InvokeMethod("ApplyStats");
             if(card.GetComponent<CustomCard>() is CustomCard modCard) {
-                if(reasign) {
-                    if("card" == "Can be reasigned") {
-                        modCard.OnAddCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
-                            player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
-                    }
-                    modCard.OnReassignCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
-                        player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
-                } else {
+                if(doAsign) {
                     modCard.OnAddCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
                         player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
                 }
+                if(reasign) {
+                    modCard.OnReassignCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
+                        player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
+                } 
             }
         }
     }
