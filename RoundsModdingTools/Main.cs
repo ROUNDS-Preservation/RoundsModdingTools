@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using HarmonyLib;
 using UnboundLib;
 using UnityEngine;
 
@@ -8,7 +9,8 @@ namespace ModdingTools {
     [BepInProcess("Rounds.exe")]
     public class Main : BaseUnityPlugin {
         
-        void awake() {
+        void Awake() {
+            new Harmony(Info.Metadata.GUID).PatchAll();
 
         }
 

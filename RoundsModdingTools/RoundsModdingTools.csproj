@@ -20,6 +20,9 @@
 		<Reference Include="UnboundLib">
 			<HintPath>..\Assemblies\UnboundLib.dll</HintPath>
 		</Reference>
+		<Reference Include="UnboundCards">
+			<HintPath>..\Assemblies\UnboundCards.dll</HintPath>
+		</Reference>
 		<Reference Include="CardChoiceSpawnUniqueCardPatch">
 			<HintPath>..\Assemblies\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
 		</Reference>
