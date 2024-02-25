@@ -74,7 +74,10 @@ namespace ModdingTools {
 
         internal static void ApplyCard(Player player, CardInfo card, bool reasign) {
             bool doAsign = !reasign || !Reasonabilities.ContainsKey(card) || Reasonabilities[card];
-            CardBarHandler.instance.AddCard(player.playerID, card);
+            if(reasign)
+                SilentAddCard(player.playerID, card);
+            else
+                CardBarHandler.instance.AddCard(player.playerID, card);
             card.gameObject.GetComponent<CardInfo>().sourceCard = card;
             if(doAsign) card.GetComponent<ApplyCardStats>().InvokeMethod("ApplyStats");
             if(card.GetComponent<CustomCard>() is CustomCard modCard) {
@@ -102,6 +105,14 @@ namespace ModdingTools {
                 : HiddenCards.ContainsKey(name)
                 ? HiddenCards[name]
                 : null;
+        }
+        
+        public static void SilentAddCard(int playerID, CardInfo card) {
+            CardBar bar = ((CardBar[])CardBarHandler.instance.GetFieldValue("cardBars")).ElementAt(playerID);
+            var temp = bar.soundCardPick;
+            bar.soundCardPick = null;
+            CardBarHandler.instance.AddCard(playerID, card);
+            bar.soundCardPick = temp;
         }
     }
 }
