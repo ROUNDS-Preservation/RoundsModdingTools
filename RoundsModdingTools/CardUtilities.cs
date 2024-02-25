@@ -80,5 +80,12 @@ namespace ModdingTools {
                 } 
             }
         }
+
+
+        internal static CardInfo? FindFromObjectName(string name) {
+            return CardManager.cards.Values.Any(c => c.cardInfo.name == name) 
+                ? CardManager.cards.Values.First(c => c.cardInfo.name == name).cardInfo
+                : null;
+        }
     }
 }
