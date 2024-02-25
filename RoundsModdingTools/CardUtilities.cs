@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnboundLib.Cards.Utils;
@@ -12,6 +13,7 @@ namespace ModdingTools {
     public static class CardUtilities {
         internal static List<Func<string,CardInfo>> lookupFunctions = new List<Func<string,CardInfo>>();
         internal static Dictionary<CardInfo,bool> Reasonabilities = new Dictionary<CardInfo,bool>();
+        internal static Dictionary<string, CardInfo> HiddenCards = new Dictionary<string, CardInfo>();
 
         public static void SetReasonability(CardInfo card, bool Reasonability = false) {
             Reasonabilities[card] = Reasonability;
@@ -27,15 +29,19 @@ namespace ModdingTools {
             if(player == null) return;
             if(card != null) {
                 if(PhotonNetwork.OfflineMode) {
-                    RPC_AddFromObject(player.playerID, card.name, reasign);
+                    RPC_AddFromObject(player.playerID, 
+                        HiddenCards.ContainsValue(card) ? HiddenCards.Keys.First(key => HiddenCards[key] == card) : card.name,
+                        reasign);
                 } else if(PhotonNetwork.IsMasterClient) {
-                    NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromObject", player.playerID, card.name, reasign);
+                    NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromObject", player.playerID,
+                        HiddenCards.ContainsValue(card) ? HiddenCards.Keys.First(key => HiddenCards[key] == card) : card.name,
+                        reasign);
                 }
             }else if(lookupString != "") {
                 if(PhotonNetwork.OfflineMode) {
                     RPC_AddFromString(player.playerID, lookupString, reasign);
                 } else if(PhotonNetwork.IsMasterClient) {
-                    NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromString", player.playerID, card.name, reasign);
+                    NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromString", player.playerID, lookupString, reasign);
                 }
             }
 
@@ -46,6 +52,8 @@ namespace ModdingTools {
             Player player = PlayerUtilites.GetPlayer(playerID);
             CardInfo card = CardManager.cards.Values.Any(c=> c.cardInfo.name == cardObject) 
                 ? CardManager.cards.Values.First(c => c.cardInfo.name == cardObject).cardInfo
+                : HiddenCards.ContainsKey(cardObject)
+                ? HiddenCards[cardObject]
                 : CardChoiceSpawnUniqueCardPatch.CardChoiceSpawnUniqueCardPatch.NullCard;
             ApplyCard(player, card, reasign);
 
@@ -81,10 +89,18 @@ namespace ModdingTools {
             }
         }
 
+        public static void AddHiddenCard(CardInfo card, string identifierOverride = "") {
+            if(identifierOverride == "")
+                HiddenCards.Add(card.name, card);
+            else
+                HiddenCards.Add(identifierOverride, card);
+        }
 
-        internal static CardInfo? FindFromObjectName(string name) {
-            return CardManager.cards.Values.Any(c => c.cardInfo.name == name) 
+        public static CardInfo? FindFromObjectName(string name) {
+            return CardManager.cards.Values.Any(c => c.cardInfo.name == name)
                 ? CardManager.cards.Values.First(c => c.cardInfo.name == name).cardInfo
+                : HiddenCards.ContainsKey(name)
+                ? HiddenCards[name]
                 : null;
         }
     }
