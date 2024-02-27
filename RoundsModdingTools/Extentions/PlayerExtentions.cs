@@ -1,16 +1,7 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Reflection;
-using System.Text;
-using Unbound.Core;
-using System.Runtime.CompilerServices;
 
-namespace ModdingTools.Extentions
-{
+namespace ModdingTools.Extentions {
     public static class PlayerExtentions {
 
         public static void AddCard(this Player player, CardInfo cardInfo, bool reassign = false) =>

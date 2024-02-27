@@ -7,7 +7,7 @@
 
 	<PropertyGroup>
 		<SteamFolder>F:\SteamLibrary</SteamFolder>
-		<RoundsFolder>(SteamFolder)\steamapps\common\ROUNDS</RoundsFolder>
+		<RoundsFolder>$(SteamFolder)\steamapps\common\ROUNDS</RoundsFolder>
 		<RootNamespace>ModdingTools</RootNamespace>
 	</PropertyGroup>
 

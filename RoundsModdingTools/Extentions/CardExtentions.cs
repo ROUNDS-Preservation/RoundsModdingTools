@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
+﻿
 namespace ModdingTools.Extentions {
     public static class CardExtentions {
 
@@ -11,7 +6,7 @@ namespace ModdingTools.Extentions {
             CardUtilities.AddToPlayer(player, cardInfo, reassign: reassign);
 
         public static bool CanAddToPlayer(this CardInfo cardInfo, Player player) =>
-            CardChoiceSpawnUniqueCardPatch.CardChoicePatchSpawnUniqueCard.PlayerIsAllowedCard(player,cardInfo);
+            CardChoiceSpawnUniqueCardPatch.CardChoicePatchSpawnUniqueCard.PlayerIsAllowedCard(player, cardInfo);
 
         public static void AddAsHidden(this CardInfo cardInfo, string identifierOverride = "") =>
             CardUtilities.AddHiddenCard(cardInfo, identifierOverride);

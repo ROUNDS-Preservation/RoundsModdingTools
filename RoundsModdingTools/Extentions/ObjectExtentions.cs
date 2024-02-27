@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace ModdingTools.Extentions {
     public static class ObjectExtentions {
@@ -11,7 +8,7 @@ namespace ModdingTools.Extentions {
         private static readonly Dictionary<Type, ConditionalWeakTable<object, Dictionary<string, object>>> Bindings
             = new Dictionary<Type, ConditionalWeakTable<object, Dictionary<string, object>>>();
 
-        public static void StoreExtraData<ObjectType, DataType>(this ObjectType thing, string identifier,  DataType data) {
+        public static void StoreExtraData<ObjectType, DataType>(this ObjectType thing, string identifier, DataType data) {
             Type type = thing.GetType();
             if(!Bindings.ContainsKey(type)) Bindings.Add(type, new ConditionalWeakTable<object, Dictionary<string, object>>());
             Bindings[type].GetOrCreateValue(thing)[identifier] = data;

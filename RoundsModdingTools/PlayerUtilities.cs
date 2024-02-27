@@ -1,15 +1,13 @@
 ﻿using ModdingTools.Extentions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Text;
 using Unbound.Core;
 using Photon.Pun;
 
 namespace ModdingTools {
     public static class PlayerUtilities {
-        public static Player GetPlayer(int id){
+        public static Player GetPlayer(int id) {
             if(PlayerManager.instance.players.Any(p => p.playerID == id))
                 return PlayerManager.instance.players.FirstOrDefault(p => p.playerID == id);
             return null;

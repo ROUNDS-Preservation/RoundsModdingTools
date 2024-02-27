@@ -10,8 +10,8 @@ using Unbound.Core.Networking;
 
 namespace ModdingTools {
     public static class CardUtilities {
-        internal static List<Func<string,CardInfo>> LookupFunctions = new List<Func<string,CardInfo>>();
-        internal static Dictionary<CardInfo,bool> Reassignabilities = new Dictionary<CardInfo,bool>();
+        internal static List<Func<string, CardInfo>> LookupFunctions = new List<Func<string, CardInfo>>();
+        internal static Dictionary<CardInfo, bool> Reassignabilities = new Dictionary<CardInfo, bool>();
         internal static Dictionary<string, CardInfo> HiddenCards = new Dictionary<string, CardInfo>();
         internal static List<Func<Player, CardInfo, bool>> CardValidators = new List<Func<Player, CardInfo, bool>>();
 
@@ -28,7 +28,7 @@ namespace ModdingTools {
         }
 
         public static bool AddLookupFunc(Func<string, CardInfo> function) {
-            if (LookupFunctions.Contains(function)) return false;
+            if(LookupFunctions.Contains(function)) return false;
             LookupFunctions.Add(function);
             return true;
         }
@@ -43,7 +43,7 @@ namespace ModdingTools {
             if(player == null) return;
             if(card != null) {
                 if(PhotonNetwork.OfflineMode) {
-                    RPC_AddFromObject(player.playerID, 
+                    RPC_AddFromObject(player.playerID,
                         HiddenCards.ContainsValue(card) ? HiddenCards.Keys.First(key => HiddenCards[key] == card) : card.name,
                         reassign);
                 } else if(PhotonNetwork.IsMasterClient) {
@@ -51,7 +51,7 @@ namespace ModdingTools {
                         HiddenCards.ContainsValue(card) ? HiddenCards.Keys.First(key => HiddenCards[key] == card) : card.name,
                         reassign);
                 }
-            }else if(lookupString != "") {
+            } else if(lookupString != "") {
                 if(PhotonNetwork.OfflineMode) {
                     RPC_AddFromString(player.playerID, lookupString, reassign);
                 } else if(PhotonNetwork.IsMasterClient) {
@@ -64,7 +64,7 @@ namespace ModdingTools {
         [UnboundRPC]
         public static void RPC_AddFromObject(int playerID, string cardObject, bool reassign) {
             Player player = PlayerUtilities.GetPlayer(playerID);
-            CardInfo card = CardManager.cards.Values.Any(c=> c.cardInfo.name == cardObject) 
+            CardInfo card = CardManager.cards.Values.Any(c => c.cardInfo.name == cardObject)
                 ? CardManager.cards.Values.First(c => c.cardInfo.name == cardObject).cardInfo
                 : HiddenCards.ContainsKey(cardObject)
                 ? HiddenCards[cardObject]
@@ -100,7 +100,7 @@ namespace ModdingTools {
                 }
                 if(reassign) {
                     modCard.OnReassignCard(player, player.Gun(), player.Ammo(), player.data, player.HealthHandler(), player.Gravity(), player.Block(), player.Stats());
-                } 
+                }
             }
         }
 
@@ -118,7 +118,7 @@ namespace ModdingTools {
                 ? HiddenCards[name]
                 : null;
         }
-        
+
         public static void SilentAddCard(int playerID, CardInfo card) {
             CardBar bar = CardBarHandler.instance.GetFieldValue<CardBar[]>("cardBars").ElementAt(playerID);
             var temp = bar.soundCardPick;
