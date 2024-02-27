@@ -7,7 +7,7 @@ using System.Text;
 using Unbound.Core;
 using Photon.Pun;
 
-namespace ModdingTools.Utilities
+namespace ModdingTools
 {
     public static class PlayerUtilities
     {

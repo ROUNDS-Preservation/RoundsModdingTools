@@ -8,7 +8,7 @@ using Unbound.Cards;
 using Unbound.Cards.Utils;
 using Unbound.Core.Networking;
 
-namespace ModdingTools.Utilities
+namespace ModdingTools
 {
     public static class CardUtilities
     {

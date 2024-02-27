@@ -9,7 +9,8 @@ using System.Text;
 using Unbound.Core;
 using System.Runtime.CompilerServices;
 
-namespace ModdingTools.Extentions {
+namespace ModdingTools.Extentions
+{
     public static class PlayerExtentions {
 
         public static void AddCard(this Player player, CardInfo cardInfo, bool reassign = false) =>

@@ -39,10 +39,10 @@
 			<HintPath>$(RoundsFolder)\Rounds_Data\Managed\SonigonAudioEngine.Runtime.dll</HintPath>
 		</Reference>
 		<Reference Include="Unbound">
-		  <HintPath>$(RoundsFolder)\BepInEx\plugins\Unbound.dll</HintPath>
+		  <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundLib.dll</HintPath>
 		</Reference>
 		<Reference Include="UnboundCards">
-		  <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundCards.dll</HintPath>
+		  <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundCards.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.TextMeshPro">
 			<HintPath>$(RoundsFolder)\Rounds_Data\Managed\Unity.TextMeshPro.dll</HintPath>
