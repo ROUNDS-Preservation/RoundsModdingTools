@@ -6,22 +6,29 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<RoundsFolder>C:\Program Files (x86)\Steam\steamapps\common\ROUNDS</RoundsFolder>
+		<SteamFolder>F:\SteamLibrary</SteamFolder>
+		<RoundsFolder>(SteamFolder)\steamapps\common\ROUNDS</RoundsFolder>
 		<RootNamespace>ModdingTools</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Reference Include="0Harmony">
-			<HintPath>$(RoundsFolder)\BepInEx\core\0Harmony.dll</HintPath>
+			<HintPath>..\Assemblies\0Harmony.dll</HintPath>
 		</Reference>
 		<Reference Include="BepInEx">
-			<HintPath>$(RoundsFolder)\BepInEx\core\BepInEx.dll</HintPath>
+			<HintPath>..\Assemblies\BepInEx.dll</HintPath>
+		</Reference>
+		<Reference Include="UnboundLib">
+			<HintPath>..\Assemblies\UnboundLib.dll</HintPath>
+		</Reference>
+		<Reference Include="UnboundCards">
+			<HintPath>..\Assemblies\UnboundCards.dll</HintPath>
+		</Reference>
+		<Reference Include="CardChoiceSpawnUniqueCardPatch">
+			<HintPath>..\Assemblies\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
 		</Reference>
 		<Reference Include="Assembly-CSharp">
 			<HintPath>$(RoundsFolder)\Rounds_Data\Managed\Assembly-CSharp.dll</HintPath>
-		</Reference>
-		<Reference Include="CardChoiceSpawnUniqueCardPatch">
-		  <HintPath>$(RoundsFolder)\BepInEx\plugins\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
 		</Reference>
 		<Reference Include="InControl">
 			<HintPath>$(RoundsFolder)\Rounds_Data\Managed\InControl.dll</HintPath>
@@ -37,12 +44,6 @@
 		</Reference>
 		<Reference Include="SonigonAudioEngine.Runtime">
 			<HintPath>$(RoundsFolder)\Rounds_Data\Managed\SonigonAudioEngine.Runtime.dll</HintPath>
-		</Reference>
-		<Reference Include="Unbound">
-		  <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundLib.dll</HintPath>
-		</Reference>
-		<Reference Include="UnboundCards">
-		  <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundCards.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.TextMeshPro">
 			<HintPath>$(RoundsFolder)\Rounds_Data\Managed\Unity.TextMeshPro.dll</HintPath>
