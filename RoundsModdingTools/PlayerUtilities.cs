@@ -56,24 +56,24 @@ namespace ModdingTools {
         }
 
         public static bool BlacklistCatagoryFormPlayer(Player player, CardCategory category) {
-            List<CardCategory> data = player.GetData<List<CardCategory>>("BlacklistedCatagories");
+            List<CardCategory> data = player.RetrieveExtraData<Player, List<CardCategory>>("BlacklistedCatagories");
             if(data == null) data = new List<CardCategory>();
             if(data.Contains(category)) return false;
             data.Add(category);
-            player.AddOrSetData("BlacklistedCatagories", data);
+            player.StoreExtraData("BlacklistedCatagories", data);
             return true;
         }
 
         public static bool UnblacklistCatagoryFormPlayer(Player player, CardCategory category) {
-            List<CardCategory> data = player.GetData<List<CardCategory>>("BlacklistedCatagories");
+            List<CardCategory> data = player.RetrieveExtraData<Player, List<CardCategory>>("BlacklistedCatagories");
             if(data == null || data.Contains(category)) return false;
             data.Remove(category);
-            player.AddOrSetData("BlacklistedCatagories", data);
+            player.StoreExtraData("BlacklistedCatagories", data);
             return true;
         }
 
         public static List<CardCategory> GetPlayerBlacklistedCatagories(Player player) {
-            List<CardCategory> data = player.GetData<List<CardCategory>>("BlacklistedCatagories");
+            List<CardCategory> data = player.RetrieveExtraData<Player, List<CardCategory>>("BlacklistedCatagories");
             if(data == null) data = new List<CardCategory>();
             return data;
         }

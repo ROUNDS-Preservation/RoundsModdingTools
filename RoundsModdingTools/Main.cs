@@ -19,7 +19,7 @@ namespace ModdingTools {
 
         void Start() {
             Func<Player, CardInfo, bool> old = (Func<Player, CardInfo, bool>)CardChoicePatchSpawnUniqueCard.PlayerIsAllowedCard.Clone();
-            CardChoicePatchSpawnUniqueCard.PlayerIsAllowedCard = (Player p, CardInfo c) => old(p,c) && true;
+            CardChoicePatchSpawnUniqueCard.PlayerIsAllowedCard = (Player p, CardInfo c) => old(p,c) && CardUtilities.PlayerAllowedFunction(p,c);
         }
     }
 }

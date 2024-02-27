@@ -12,21 +12,6 @@ using System.Runtime.CompilerServices;
 namespace ModdingTools.Extentions {
     public static class PlayerExtentions {
 
-        internal static readonly ConditionalWeakTable<Player, Dictionary<string, (Type, object)>> AdditionalData
-            = new ConditionalWeakTable<Player, Dictionary<string, (Type, object)>>();
-
-        public static void AddOrSetData<T>(this Player player, string key, T data) =>
-            AdditionalData.GetOrCreateValue(player)[key] = (data.GetType(), data);
-
-#pragma warning disable CS8603 // Possible null reference return.
-        public static T GetData<T>(this Player player, string key) =>
-             AdditionalData.GetOrCreateValue(player).ContainsKey(key)
-                ? (T)AdditionalData.GetOrCreateValue(player)[key].Item2
-                : default(T);
-#pragma warning restore CS8603 // Possible null reference return.
-
-
-
         public static void AddCard(this Player player, CardInfo cardInfo, bool reassign = false) =>
             CardUtilities.AddToPlayer(player, cardInfo, reassign: reassign);
 
