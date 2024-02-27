@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using ModdingTools.Utilities;
 
-namespace ModdingTools.Extentions {
+namespace ModdingTools.Extentions
+{
     public static class CardExtentions {
 
         public static void AddToPlayer(this CardInfo cardInfo, Player player, bool reassign = false) =>
