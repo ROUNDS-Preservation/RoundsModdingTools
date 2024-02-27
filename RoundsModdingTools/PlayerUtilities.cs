@@ -71,5 +71,11 @@ namespace ModdingTools {
             player.AddOrSetData("BlacklistedCatagories", data);
             return true;
         }
+
+        public static List<CardCategory> GetPlayerBlacklistedCatagories(Player player) {
+            List<CardCategory> data = player.GetData<List<CardCategory>>("BlacklistedCatagories");
+            if(data == null) data = new List<CardCategory>();
+            return data;
+        }
     }
 }
