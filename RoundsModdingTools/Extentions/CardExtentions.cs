@@ -4,8 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace ModdingTools.Extentions
-{
+namespace ModdingTools.Extentions {
     public static class CardExtentions {
 
         public static void AddToPlayer(this CardInfo cardInfo, Player player, bool reassign = false) =>

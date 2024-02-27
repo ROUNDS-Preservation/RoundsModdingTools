@@ -6,8 +6,7 @@ using System.Reflection;
 using Unbound.Core;
 using UnityEngine;
 
-namespace ModdingTools
-{
+namespace ModdingTools {
     [BepInDependency("com.willis.rounds.unbound")] 
     [BepInPlugin("TODO", "ModdingTools", "1.0.0")]
     [BepInProcess("Rounds.exe")]
