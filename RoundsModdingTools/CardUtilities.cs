@@ -11,81 +11,81 @@ using UnboundLib.Networking;
 
 namespace ModdingTools {
     public static class CardUtilities {
-        internal static List<Func<string,CardInfo>> lookupFunctions = new List<Func<string,CardInfo>>();
-        internal static Dictionary<CardInfo,bool> Reasonabilities = new Dictionary<CardInfo,bool>();
+        internal static List<Func<string,CardInfo>> LookupFunctions = new List<Func<string,CardInfo>>();
+        internal static Dictionary<CardInfo,bool> Reassignabilities = new Dictionary<CardInfo,bool>();
         internal static Dictionary<string, CardInfo> HiddenCards = new Dictionary<string, CardInfo>();
 
-        public static void SetReasonability(CardInfo card, bool Reasonability = false) {
-            Reasonabilities[card] = Reasonability;
+        public static void SetReasonability(CardInfo card, bool reassignability = false) {
+            Reassignabilities[card] = reassignability;
         }
 
         public static bool AddLookupFunc(Func<string, CardInfo> function) {
-            if (lookupFunctions.Contains(function)) return false;
-            lookupFunctions.Add(function);
+            if (LookupFunctions.Contains(function)) return false;
+            LookupFunctions.Add(function);
             return true;
         }
 
-        public static void AddToPlayer(Player player, CardInfo? card = null, string lookupString = "", bool reasign = false) {
+        public static void AddToPlayer(Player player, CardInfo? card = null, string lookupString = "", bool reassign = false) {
             if(player == null) return;
             if(card != null) {
                 if(PhotonNetwork.OfflineMode) {
                     RPC_AddFromObject(player.playerID, 
                         HiddenCards.ContainsValue(card) ? HiddenCards.Keys.First(key => HiddenCards[key] == card) : card.name,
-                        reasign);
+                        reassign);
                 } else if(PhotonNetwork.IsMasterClient) {
                     NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromObject", player.playerID,
                         HiddenCards.ContainsValue(card) ? HiddenCards.Keys.First(key => HiddenCards[key] == card) : card.name,
-                        reasign);
+                        reassign);
                 }
             }else if(lookupString != "") {
                 if(PhotonNetwork.OfflineMode) {
-                    RPC_AddFromString(player.playerID, lookupString, reasign);
+                    RPC_AddFromString(player.playerID, lookupString, reassign);
                 } else if(PhotonNetwork.IsMasterClient) {
-                    NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromString", player.playerID, lookupString, reasign);
+                    NetworkingManager.RPC(typeof(CardUtilities), "RPC_AddFromString", player.playerID, lookupString, reassign);
                 }
             }
 
         }
 
         [UnboundRPC]
-        public static void RPC_AddFromObject(int playerID, string cardObject, bool reasign) {
+        public static void RPC_AddFromObject(int playerID, string cardObject, bool reassign) {
             Player player = PlayerUtilites.GetPlayer(playerID);
             CardInfo card = CardManager.cards.Values.Any(c=> c.cardInfo.name == cardObject) 
                 ? CardManager.cards.Values.First(c => c.cardInfo.name == cardObject).cardInfo
                 : HiddenCards.ContainsKey(cardObject)
                 ? HiddenCards[cardObject]
                 : CardChoiceSpawnUniqueCardPatch.CardChoiceSpawnUniqueCardPatch.NullCard;
-            ApplyCard(player, card, reasign);
+            ApplyCard(player, card, reassign);
 
         }
 
         [UnboundRPC]
-        public static void RPC_AddFromString(int playerID, string lookupString, bool reasign) {
+        public static void RPC_AddFromString(int playerID, string lookupString, bool reassign) {
             Player player = PlayerUtilites.GetPlayer(playerID);
             CardInfo card;
-            foreach(var func in lookupFunctions) {
+            foreach(var func in LookupFunctions) {
                 card = func(lookupString);
                 if(card != null) goto found;
             }
             card = CardChoiceSpawnUniqueCardPatch.CardChoiceSpawnUniqueCardPatch.NullCard;
             found:
-            ApplyCard(player, card, reasign);
+            ApplyCard(player, card, reassign);
         }
 
-        internal static void ApplyCard(Player player, CardInfo card, bool reasign) {
-            bool doAsign = !reasign || !Reasonabilities.ContainsKey(card) || Reasonabilities[card];
-            if(reasign)
+        internal static void ApplyCard(Player player, CardInfo card, bool reassign) {
+            bool doAssign = !reassign || !Reassignabilities.ContainsKey(card) || Reassignabilities[card];
+            if(reassign)
                 SilentAddCard(player.playerID, card);
             else
                 CardBarHandler.instance.AddCard(player.playerID, card);
             card.gameObject.GetComponent<CardInfo>().sourceCard = card;
-            if(doAsign) card.GetComponent<ApplyCardStats>().InvokeMethod("ApplyStats");
+            if(doAssign) card.GetComponent<ApplyCardStats>().InvokeMethod("ApplyStats");
             if(card.GetComponent<CustomCard>() is CustomCard modCard) {
-                if(doAsign) {
+                if(doAssign) {
                     modCard.OnAddCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
                         player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
                 }
-                if(reasign) {
+                if(reassign) {
                     modCard.OnReassignCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
                         player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
                 } 
