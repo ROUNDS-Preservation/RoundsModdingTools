@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using HarmonyLib;
-using UnboundLib;
+using Unbound.Core;
 using UnityEngine;
 
 namespace ModdingTools {

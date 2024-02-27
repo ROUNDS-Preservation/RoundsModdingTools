@@ -1,13 +1,12 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
+﻿using ModdingTools.Extentions;
+using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-using UnboundLib;
-using UnboundLib.Cards;
-using UnboundLib.Cards.Utils;
-using UnboundLib.Networking;
+using Unbound.Core;
+using Unbound.Cards;
+using Unbound.Cards.Utils;
+using Unbound.Core.Networking;
 
 namespace ModdingTools {
     public static class CardUtilities {
@@ -82,12 +81,10 @@ namespace ModdingTools {
             if(doAssign) card.GetComponent<ApplyCardStats>().InvokeMethod("ApplyStats");
             if(card.GetComponent<CustomCard>() is CustomCard modCard) {
                 if(doAssign) {
-                    modCard.OnAddCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
-                        player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
+                    modCard.OnAddCard(player, player.Gun(), player.Ammo(), player.data, player.HealthHandler(), player.Gravity(), player.Block(), player.Stats());
                 }
                 if(reassign) {
-                    modCard.OnReassignCard(player, player.data.weaponHandler.gun, player.data.weaponHandler.GetComponentInChildren<GunAmmo>(),
-                        player.data, player.data.healthHandler, player.GetComponent<Gravity>(), player.data.block, player.data.stats);
+                    modCard.OnReassignCard(player, player.Gun(), player.Ammo(), player.data, player.HealthHandler(), player.Gravity(), player.Block(), player.Stats());
                 } 
             }
         }
@@ -108,7 +105,7 @@ namespace ModdingTools {
         }
         
         public static void SilentAddCard(int playerID, CardInfo card) {
-            CardBar bar = ((CardBar[])CardBarHandler.instance.GetFieldValue("cardBars")).ElementAt(playerID);
+            CardBar bar = CardBarHandler.instance.GetFieldValue<CardBar[]>("cardBars").ElementAt(playerID);
             var temp = bar.soundCardPick;
             bar.soundCardPick = null;
             CardBarHandler.instance.AddCard(playerID, card);
