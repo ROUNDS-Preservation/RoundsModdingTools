@@ -9,7 +9,7 @@ namespace ModdingTools {
     public static class PlayerUtilities {
         public static Player GetPlayer(int id) {
             if(PlayerManager.instance.players.Any(p => p.playerID == id))
-                return PlayerManager.instance.players.FirstOrDefault(p => p.playerID == id);
+                return PlayerManager.instance.players.First(p => p.playerID == id);
             return null;
         }
 
