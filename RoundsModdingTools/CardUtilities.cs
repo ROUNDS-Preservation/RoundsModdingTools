@@ -13,6 +13,15 @@ namespace ModdingTools {
         internal static List<Func<string,CardInfo>> LookupFunctions = new List<Func<string,CardInfo>>();
         internal static Dictionary<CardInfo,bool> Reassignabilities = new Dictionary<CardInfo,bool>();
         internal static Dictionary<string, CardInfo> HiddenCards = new Dictionary<string, CardInfo>();
+        internal static List<Func<Player, CardInfo, bool>> CardValidators = new List<Func<Player, CardInfo, bool>>();
+
+        internal static bool PlayerAllowedFunction(Player player, CardInfo cardInfo) {
+            if(player.GetBlacklistedCatagories().Intersect(cardInfo.categories).Any()) return false;
+            foreach(var func in CardValidators) {
+                if(!func(player, cardInfo)) return false;
+            }
+            return true;
+        }
 
         public static void SetReasonability(CardInfo card, bool reassignability = false) {
             Reassignabilities[card] = reassignability;
@@ -21,6 +30,12 @@ namespace ModdingTools {
         public static bool AddLookupFunc(Func<string, CardInfo> function) {
             if (LookupFunctions.Contains(function)) return false;
             LookupFunctions.Add(function);
+            return true;
+        }
+
+        public static bool AddCardValidator(Func<Player, CardInfo, bool> function) {
+            if(CardValidators.Contains(function)) return false;
+            CardValidators.Add(function);
             return true;
         }
 
@@ -48,7 +63,7 @@ namespace ModdingTools {
 
         [UnboundRPC]
         public static void RPC_AddFromObject(int playerID, string cardObject, bool reassign) {
-            Player player = PlayerUtilites.GetPlayer(playerID);
+            Player player = PlayerUtilities.GetPlayer(playerID);
             CardInfo card = CardManager.cards.Values.Any(c=> c.cardInfo.name == cardObject) 
                 ? CardManager.cards.Values.First(c => c.cardInfo.name == cardObject).cardInfo
                 : HiddenCards.ContainsKey(cardObject)
@@ -60,7 +75,7 @@ namespace ModdingTools {
 
         [UnboundRPC]
         public static void RPC_AddFromString(int playerID, string lookupString, bool reassign) {
-            Player player = PlayerUtilites.GetPlayer(playerID);
+            Player player = PlayerUtilities.GetPlayer(playerID);
             CardInfo card;
             foreach(var func in LookupFunctions) {
                 card = func(lookupString);

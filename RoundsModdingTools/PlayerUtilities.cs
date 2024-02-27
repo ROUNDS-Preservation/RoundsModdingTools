@@ -8,7 +8,7 @@ using Unbound.Core;
 using Photon.Pun;
 
 namespace ModdingTools {
-    public static class PlayerUtilites {
+    public static class PlayerUtilities {
         public static Player GetPlayer(int id){
             if(PlayerManager.instance.players.Any(p => p.playerID == id))
                 return PlayerManager.instance.players.FirstOrDefault(p => p.playerID == id);
@@ -53,6 +53,23 @@ namespace ModdingTools {
                 return true;
             }
 
+        }
+
+        public static bool BlacklistCatagoryFormPlayer(Player player, CardCategory category) {
+            List<CardCategory> data = player.GetData<List<CardCategory>>("BlacklistedCatagories");
+            if(data == null) data = new List<CardCategory>();
+            if(data.Contains(category)) return false;
+            data.Add(category);
+            player.AddOrSetData("BlacklistedCatagories", data);
+            return true;
+        }
+
+        public static bool UnblacklistCatagoryFormPlayer(Player player, CardCategory category) {
+            List<CardCategory> data = player.GetData<List<CardCategory>>("BlacklistedCatagories");
+            if(data == null || data.Contains(category)) return false;
+            data.Remove(category);
+            player.AddOrSetData("BlacklistedCatagories", data);
+            return true;
         }
     }
 }
