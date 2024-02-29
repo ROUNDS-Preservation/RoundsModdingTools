@@ -11,7 +11,6 @@ namespace ModdingTools {
 
         void Awake() {
             new Harmony(Info.Metadata.GUID).PatchAll();
-
         }
 
         void Start() {

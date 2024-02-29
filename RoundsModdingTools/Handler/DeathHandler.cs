@@ -10,10 +10,10 @@ namespace ModdingTools.Handler
 {
     public class DeathHandler
     {
-        public static List<Action<Player, Dictionary<Player, float>>> PlayerDiedActionList = new List<Action<Player, Dictionary<Player, float>>>();
+        public static Action<Player, Dictionary<Player, float>>? PlayerDiedEvent;
 
         // Dictionary to track damaging players and their last damage time for each hurt player
-        internal static Dictionary<Player, Dictionary<int, float>> _damageTrackingDict = new Dictionary<Player, Dictionary<int, float>>();
+        private static Dictionary<Player, Dictionary<int, float>> _damageTrackingDict = new Dictionary<Player, Dictionary<int, float>>();
 
         internal static void PlayerTakeDamage(Player hurtPlayer, Player damagingPlayer) {
             if (damagingPlayer == null) return;
@@ -24,26 +24,17 @@ namespace ModdingTools.Handler
             _damageTrackingDict[hurtPlayer][damagingPlayer.playerID] = Time.time;
         }
 
-        internal static void HandlePlayerDeath(Player deadPlayer, List<Player> damagingPlayers, List<float> lastDamageList) {
-            try {
-                foreach (Action<Player, Dictionary<Player, float>> playerDiedAction in PlayerDiedActionList) {
-                    // Create a dictionary to store damaging players along with the damage they inflicted
-                    // And populate the dictionary with damaging players and their corresponding damage values
-                    Dictionary<Player, float> playerDamageDict = new Dictionary<Player, float>();
-                    for (int i = 0; i < lastDamageList.Count; i++) {
-                        playerDamageDict.Add(damagingPlayers[i], lastDamageList[i]);
-                    }
+        private static void HandlePlayerDeath(Player deadPlayer, List<Player> damagingPlayers, List<float> lastDamageList) {
+            Dictionary<Player, float> playerDamageDict = new Dictionary<Player, float>();
+            for (int i = 0; i < lastDamageList.Count; i++) {
+                playerDamageDict.Add(damagingPlayers[i], lastDamageList[i]);
+            }
 
-                    playerDiedAction.Invoke(deadPlayer, playerDamageDict);
-                }
-            }
-            catch (Exception e) {
-                Debug.LogException(e);
-            }
+            PlayerDiedEvent?.Invoke(deadPlayer, playerDamageDict);
         }
 
         [UnboundRPC]
-        internal static void RPCA_PlayerDied(int deadPlayerID, int[] damagingPlayersID, float[] lastDamageList) {
+        private static void RPCA_PlayerDied(int deadPlayerID, int[] damagingPlayersID, float[] lastDamageList) {
             Player deadPlayer = PlayerUtilities.GetPlayer(deadPlayerID);
             List<Player> damagingPlayers = damagingPlayersID.Select(playerID => PlayerUtilities.GetPlayer(playerID)).ToList();
 
