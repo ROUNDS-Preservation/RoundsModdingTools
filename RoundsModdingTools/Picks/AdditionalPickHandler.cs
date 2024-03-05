@@ -1,12 +1,9 @@
 ﻿using static CardChoiceSpawnUniqueCardPatch.CardChoicePatchSpawnUniqueCard;
 using static CardChoiceSpawnUniqueCardPatch.CardChoiceSpawnUniqueCardPatch;
-using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using Unbound.Core;
 using Unbound.Gamemodes;
 using UnityEngine;
@@ -14,19 +11,46 @@ using UnityEngine;
 namespace ModdingTools.Picks {
     public static class AdditionalPickHandler {
 
+        /// <summary>
+        /// Adds an extra pick at the next opertunity that pulls from a limited pool
+        /// </summary>
+        /// <param name="picker">The player that will be picking</param>
+        /// <param name="cardPool">The pool of cards to draw from</param>
+        /// <param name="validate">If it should be checked that the cards are valid for the player</param>
         public static void PickFromPool(Player picker, List<CardInfo> cardPool, bool validate = true) {
             GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DoFilteredPick(picker, cardPool, validate), GameModeHooks.Priority.Last);
         }
 
+        /// <summary>
+        /// Gives a player a number of additional picks at the next opertunity to do so
+        /// </summary>
+        /// <param name="picker">The player that will be picking</param>
+        /// <param name="picks">The number of extra picks the player will get</param>
         public static void AddAdditionalTempPicks(Player picker, int picks) {
             GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DoExtraPicks(picker, picks), GameModeHooks.Priority.Last);
         }
+
+        /// <summary>
+        /// Similar to <see cref="PickFromPool"> except that it sets the size of the hand that the player will be picking from.
+        /// </summary>
+        /// <param name="picker">The player that will be picking</param>
+        /// <param name="cardPool">The pool of cards to draw from</param>
+        /// <param name="size">The new teporary size of the player hand</param>
+        /// <param name="validate">If it should be checked that the cards are valid for the player</param>
+        /// <exception cref="DllNotFoundException">Thrown if DrawNCards cant be found</exception>
         public static void PickFromPoolWithSize(Player picker, List<CardInfo> cardPool, int size = 0, bool validate = true) {
             if(!Main.HasDrawN) throw new DllNotFoundException("Can't run without DrawNCards, Make sure you are depending on it if you wish to use this method");
             if(size == 0) size = cardPool.Count;
             GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DrawNInterface.DoFilteredPickWithSize(picker, cardPool, size, validate), GameModeHooks.Priority.Last);
         }
 
+        /// <summary>
+        /// Similar to <see cref="AddAdditionalTempPicks"> except that it sets the size of the hand that the player will be picking from.
+        /// </summary>
+        /// <param name="picker">The player that will be picking</param>
+        /// <param name="picks">The number of extra picks the player will get</param>
+        /// <param name="size">The new teporary size of the player hand</param>
+        /// <exception cref="DllNotFoundException">Thrown if DrawNCards cant be found</exception>
         public static void AddAdditionalTempPicksWithSize(Player picker, int picks, int size) {
             if(!Main.HasDrawN) throw new DllNotFoundException("Can't run without DrawNCards, Make sure you are depending on it if you wish to use this method");
             GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DrawNInterface.DoExtraPicksWithSize(picker, picks, size), GameModeHooks.Priority.Last);
@@ -45,7 +69,7 @@ namespace ModdingTools.Picks {
                 var child = chilren[j];
                 var pos = child.transform.position;
                 var rot = child.transform.rotation;
-                var validCards = validate? cards.Where(CanCardSpawn).Where(ValidForPicker).ToArray() : cards.ToArray();
+                var validCards = validate? cards.Where(CanCardSpawn).Where(ValidForPicker).ToArray() : cards.Where(CanCardSpawn).ToArray();
                 var card = DrawRandom(validCards);
                 if(card == null) card = NullCard;
                 GameObject gameObject = CardChoice.instance.InvokeMethod<GameObject>("Spawn", card.gameObject, pos, rot);
