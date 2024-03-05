@@ -14,13 +14,25 @@ using UnityEngine;
 namespace ModdingTools.Picks {
     public static class AdditionalPickHandler {
 
-        public static void PickFromPool(Player picker, bool validate = true) {
-
+        public static void PickFromPool(Player picker, List<CardInfo> cardPool, bool validate = true) {
+            GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DoFilteredPick(picker, cardPool, validate), GameModeHooks.Priority.Last);
         }
 
+        public static void AddAdditionalTempPicks(Player picker, int picks) {
+            GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DoExtraPicks(picker, picks), GameModeHooks.Priority.Last);
+        }
+        public static void PickFromPoolWithSize(Player picker, List<CardInfo> cardPool, int size = 0, bool validate = true) {
+            if(!Main.HasDrawN) throw new DllNotFoundException("Can't run without DrawNCards, Make sure you are depending on it if you wish to use this method");
+            if(size == 0) size = cardPool.Count;
+            GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DrawNInterface.DoFilteredPickWithSize(picker, cardPool, size, validate), GameModeHooks.Priority.Last);
+        }
 
+        public static void AddAdditionalTempPicksWithSize(Player picker, int picks, int size) {
+            if(!Main.HasDrawN) throw new DllNotFoundException("Can't run without DrawNCards, Make sure you are depending on it if you wish to use this method");
+            GameModeManager.AddOnceHook(GameModeHooks.HookPlayerPickEnd, _ => DrawNInterface.DoExtraPicksWithSize(picker, picks, size), GameModeHooks.Priority.Last);
+        }
 
-        internal static IEnumerator DoFilteredPick(Player picker, List<CardInfo> cards) {
+        internal static IEnumerator DoFilteredPick(Player picker, List<CardInfo> cards, bool validate) {
             Func<CardInfo,bool> ValidForPicker = (card) => PlayerIsAllowedCard(picker,card);
             CardChoiceVisuals.instance.Show(picker.playerID, true);
             CardChoice.instance.SetFieldValue("pickerType", PickerType.Player);
@@ -33,7 +45,7 @@ namespace ModdingTools.Picks {
                 var child = chilren[j];
                 var pos = child.transform.position;
                 var rot = child.transform.rotation;
-                var validCards = cards.Where(CanCardSpawn).Where(ValidForPicker).ToArray();
+                var validCards = validate? cards.Where(CanCardSpawn).Where(ValidForPicker).ToArray() : cards.ToArray();
                 var card = DrawRandom(validCards);
                 if(card == null) card = NullCard;
                 GameObject gameObject = CardChoice.instance.InvokeMethod<GameObject>("Spawn", card.gameObject, pos, rot);

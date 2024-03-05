@@ -8,10 +8,10 @@ namespace ModdingTools {
     [BepInPlugin("TODO", "ModdingTools", "1.0.0")]
     [BepInProcess("Rounds.exe")]
     public class Main:BaseUnityPlugin {
-
+        internal static bool HasDrawN = false;
         void Awake() {
             new Harmony(Info.Metadata.GUID).PatchAll();
-
+            HasDrawN = BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("pykess.rounds.plugins.pickncards");
         }
 
         void Start() {
