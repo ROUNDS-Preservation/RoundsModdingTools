@@ -24,6 +24,9 @@
 		<Reference Include="UnboundCards">
 			<HintPath>..\Assemblies\UnboundCards.dll</HintPath>
 		</Reference>
+		<Reference Include="UnboundGamemodes">
+			<HintPath>..\Assemblies\UnboundGamemodes.dll</HintPath>
+		</Reference>
 		<Reference Include="CardChoiceSpawnUniqueCardPatch">
 			<HintPath>..\Assemblies\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
 		</Reference>
